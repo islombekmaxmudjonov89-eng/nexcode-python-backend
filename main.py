@@ -1,4 +1,3 @@
-```python
 import os
 import sys
 import tempfile
@@ -75,4 +74,3 @@ def execute_python(
                 "error": "Execution timed out (3 seconds).",
                 "return_code": -1,
             }
-```
