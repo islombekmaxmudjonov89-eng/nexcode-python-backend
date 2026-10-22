@@ -1,4 +1,4 @@
-
+```python
 import os
 import sys
 import tempfile
@@ -6,9 +6,19 @@ import subprocess
 from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 app = FastAPI(title="NEXCODE AI Studio API")
+
+# CORS: Snack frontend ulanishi uchun
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "x-api-key"],
+)
 
 API_KEY = os.environ.get("NEXCODE_API_KEY", "")
 
@@ -35,7 +45,7 @@ def execute_python(
     if not API_KEY or x_api_key != API_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    # Basic limits for personal testing; this is NOT a secure sandbox.
+    # Personal testing only; this is NOT a secure sandbox.
     with tempfile.TemporaryDirectory() as temp_dir:
         file_path = Path(temp_dir) / "program.py"
         file_path.write_text(request.code, encoding="utf-8")
@@ -65,3 +75,4 @@ def execute_python(
                 "error": "Execution timed out (3 seconds).",
                 "return_code": -1,
             }
+```
